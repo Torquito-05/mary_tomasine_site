@@ -1,0 +1,463 @@
+:root {
+  /* Paleta */
+  --ink: #2B2A28;
+  --ink-soft: #55534E;
+  --paper: #e7dfd5;
+  --paper-alt: #fffaf2;
+  --moss: #C08A3E;
+  --moss-dark: #a1096f;
+  --wine: #7A3B41;
+  --wine-dark: #5F2D32;
+  --gold: #C08A3E;
+  --thread: #C9C2B4;
+  --white: #f5eee9;
+
+  /* Tipografia */
+  --font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
+  --font-body: "Work Sans", "Segoe UI", Helvetica, Arial, sans-serif;
+
+  /* Escala */
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 2rem;
+  --space-lg: 4rem;
+  --space-xl: 7rem;
+
+  --radius-sm: 8px;
+  --radius-lg: 28px;
+
+  --shadow-soft: 0 12px 30px -14px rgba(43, 42, 40, 0.25);
+  --transition: 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* ---------- Reset básico ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  color: var(--moss-dark);
+  line-height: 1.15;
+  margin: 0 0 var(--space-sm);
+  font-weight: 600;
+}
+p { margin: 0 0 var(--space-sm); color: var(--ink-soft); }
+ul { list-style: none; margin: 0; padding: 0; }
+a { color: var(--gold); text-decoration: none; }
+img { max-width: 100%; display: block; }
+
+.container {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 var(--space-md);
+}
+
+/* Foco visível para acessibilidade */
+a:focus-visible,
+button:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 3px;
+}
+
+/* ---------- "Fio costurado" — elemento*/
+section {
+  position: relative;
+}
+section + section::before {
+  content: "";
+  display: block;
+  position: absolute;
+  top: -1px;
+  left: 0;
+  width: 100%;
+  height: 40px;
+  background-repeat: repeat-x;
+  background-position: center;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='40' viewBox='0 0 120 40'%3E%3Cpath d='M0 20 Q 30 0, 60 20 T 120 20' stroke='%23C9C2B4' stroke-width='2' fill='none' stroke-dasharray='6 7'/%3E%3Ccircle cx='60' cy='20' r='3' fill='%237A3B41'/%3E%3C/svg%3E");
+  pointer-events: none;
+  opacity: 0.9;
+}
+
+/* ---------- Header / navegação ---------- */
+header {
+  position: relative;
+  background: linear-gradient(90deg, var(--moss) 0%, var(--moss-dark) 50%, var(--moss)100%);
+  color: var(--white);
+  /* SEM overflow: hidden aqui — isso corta o dropdown, que precisa
+     "vazar" para fora dos limites do header para aparecer inteiro.
+     O padrão decorativo abaixo (header::after) já usa inset:0 e não
+     precisa de overflow:hidden para se conter. */
+}
+header::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cpath d='M0 100 Q 50 60, 100 100 T 200 100' stroke='%23FCFBF8' stroke-opacity='0.05' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+  background-size: 400px;
+  pointer-events: none;
+}
+
+.navbar {
+  position: relative;
+  /* FIX: era z-index: 5, empatando com .home-content (também z-index: 5).
+     Em caso de empate, o elemento que vem depois no HTML (.home-content)
+     cobria o dropdown, mesmo ele tendo z-index: 20 internamente.
+     Agora o próprio .navbar fica acima de .home-content no empilhamento. */
+  z-index: 30;
+  padding: var(--space-sm) 0;
+}
+.navbar ul {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-md);
+  padding: var(--space-sm) var(--space-md);
+}
+.navbar a {
+  color: var(--white);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  opacity: 0.85;
+  transition: opacity var(--transition);
+}
+
+.navbar h3 {
+  color: var(--white);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  opacity: 0.85;
+  transition: opacity var(--transition);
+}
+
+.navbar a:hover { opacity: 1; }
+.navbar h3:hover { opacity: 1; }
+
+/* ---------- Dropdown "Redes Sociais" ---------- */
+.navbar li.has-dropdown {
+  position: relative;
+}
+.navbar li.has-dropdown > a::after {
+  content: "▾";
+  display: inline-block;
+  margin-left: 0.35rem;
+  font-size: 0.7em;
+  transition: transform var(--transition);
+}
+.navbar li.has-dropdown:hover > a::after,
+.navbar li.has-dropdown:focus-within > a::after {
+  transform: rotate(180deg);
+}
+
+.navbar .dropdown {
+  position: absolute;
+  top: 100%;              /* encostado, sem gap: elimina a "zona morta" de hover */
+  right: 0;
+  left: auto;
+  min-width: 190px;
+  background: var(--paper-alt);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-soft);
+  padding: 0.5rem;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(4px);
+  transition: opacity var(--transition), transform var(--transition), visibility var(--transition);
+  z-index: 20;
+}
+
+.navbar li.has-dropdown:hover .dropdown,
+.navbar li.has-dropdown:focus-within .dropdown {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.navbar .dropdown li { width: 100%; }
+.navbar .dropdown a {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 0.75rem;
+  border-radius: var(--radius-sm);
+  color: var(--ink);
+  text-transform: none;
+  font-size: 0.9rem;
+  letter-spacing: 0;
+  opacity: 1;
+  transition: background var(--transition), color var(--transition);
+}
+.navbar .dropdown a:hover {
+  background: var(--paper);
+  color: var(--wine-dark);
+}
+.navbar .dropdown svg { flex-shrink: 0; }
+
+@media (max-width: 600px) {
+  .navbar .dropdown {
+    position: static;
+    transform: none;
+    min-width: 0;
+    box-shadow: none;
+    background: rgba(252, 251, 248, 0.08);
+    display: none;
+  }
+  .navbar li.has-dropdown:hover .dropdown,
+  .navbar li.has-dropdown:focus-within .dropdown {
+    display: block;
+    transform: none;
+  }
+}
+
+.home-content {
+  position: relative;
+  z-index: 5;
+  max-width: 780px;
+  margin: 0 auto;
+  padding: var(--space-xl) var(--space-md) calc(var(--space-xl) + 40px);
+  text-align: center;
+}
+.exclusive.badge {
+  display: inline-block;
+  padding: 0.4rem 1rem;
+  margin-bottom: var(--space-md);
+  border: 1px solid rgba(252, 251, 248, 0.35);
+  border-radius: 999px;
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  color: var(--white);
+  background: rgba(252, 251, 248, 0.08);
+}
+.home-content h1 {
+  color: var(--white);
+  font-size: clamp(2rem, 4.5vw, 3.2rem);
+  margin-bottom: var(--space-md);
+}
+.home-content p {
+  color: rgba(252, 251, 248, 0.85);
+  font-size: 1.05rem;
+  max-width: 620px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.btn-cta {
+  display: inline-block;
+  padding: 0.9rem 2rem;
+  background: var(--gold);
+  color: var(--white);
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  box-shadow: var(--shadow-soft);
+  transition: transform var(--transition), filter var(--transition);
+}
+.btn-cta:hover {
+  filter: brightness(0.9);
+  transform: translateY(-2px);
+}
+
+/* ---------- Sobre ---------- */
+.about-section { padding: var(--space-xl) 0 var(--space-lg); }
+.about-section .row-container {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+  margin-bottom: var(--space-lg);
+}
+.about-section .row-container:nth-of-type(2) {
+  flex-direction: row-reverse;
+}
+.img-container {
+  flex: 0 0 42%;
+  aspect-ratio: 4 / 5;
+  background-size: cover;
+  background-position: center;
+  border-radius: var(--radius-lg) var(--radius-lg) var(--radius-lg) 4px;
+  box-shadow: var(--shadow-soft);
+}
+.text-container { flex: 1; }
+.text-container h2.about { font-size: 2rem; }
+.text-container h3 { color: var(--gold); font-size: 1.1rem; }
+
+/* ---------- Serviços & Atendimento (cards) ---------- */
+.services-section,
+.apointment-forms {
+  padding: var(--space-xl) 0;
+}
+.services-section { background: var(--paper-alt); }
+
+.title-services,
+.title-apoinment,
+.title-location,
+.title-faq {
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  text-align: center;
+}
+
+.title-testimony,
+.title-events {
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  text-align: center;
+  visibility: hidden;
+}
+
+.services-description {
+  text-align: center;
+  max-width: 480px;
+  margin: 0 auto var(--space-md);
+  color: var(--ink-soft);
+}
+
+.service-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: var(--space-sm);
+  box-shadow: var(--shadow-soft);
+  border-top: 3px solid var(--moss);
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+.service-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px -18px rgba(43, 42, 40, 0.3);
+}
+.apointment-forms .service-card { border-top-color: var(--gold); }
+
+.service-card img {
+  border-radius: var(--radius-sm);
+}
+.service-card .Content h4 {
+  font-size: 1.15rem;
+  margin-bottom: 0.4rem;
+}
+.service-card .Content p { margin-bottom: 0; font-size: 0.95rem; }
+
+/* ---------- Localização ---------- */
+.location-section {
+  padding: var(--space-xl) 0;
+  text-align: center;
+}
+.location-section .service-card {
+  border-top-color: var(--gold);
+  min-height: 160px;
+}
+
+/* ---------- Eventos ---------- */
+.events-section {
+  padding: var(--space-xl) 0, hidden;
+  text-align: center;
+  visibility: hidden;
+}
+.events-section .service-card {
+  border-top-color: var(--moss);
+  min-height: 160px;
+  visibility: hidden;
+}
+
+/* ---------- Depoimentos & FAQ ---------- */
+.testimony-section {
+  padding: var(--space-xl) 0, hidden;
+  text-align: center;
+  visibility: hidden;
+}
+.faq-section {
+  padding: var(--space-xl) 0;
+  text-align: center;
+}
+.faq-section { background: var(--paper-alt); }
+
+/* ---------- Rodapé ---------- */
+footer {
+  background: var(--moss-dark);
+  color: rgb(255, 255, 255);
+  text-align: center;
+  padding: var(--space-md) 0;
+  font-size: 0.85rem;
+}
+
+/* ---------- Animações de entrada ----------*/
+.js-animate [data-animate] {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+[data-animate].visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-animate] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .service-card:hover,
+  .btn-cta:hover {
+    transform: none;
+  }
+}
+
+/* ---------- Responsivo ---------- */
+@media (max-width: 900px) {
+  .about-section .row-container,
+  .about-section .row-container:nth-of-type(2) {
+    flex-direction: column;
+  }
+  .img-container {
+    flex: 0 0 auto;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+  }
+}
+
+@media (max-width: 600px) {
+  :root { font-size: 15px; }
+  .navbar ul { gap: var(--space-sm); }
+  .home-content { padding: var(--space-lg) var(--space-sm); }
+}
+
+/* ---------- Botão WhatsApp flutuante ---------- */
+.whatsapp-float {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 58px;
+  height: 58px;
+  background: #25D366;
+  color: var(--white);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-soft);
+  z-index: 50;
+  transition: transform var(--transition), filter var(--transition);
+}
+
+.whatsapp-float:hover {
+  transform: scale(1.08);
+  filter: brightness(1.05);
+}
+
+@media (max-width: 600px) {
+  .whatsapp-float {
+    bottom: 16px;
+    right: 16px;
+    width: 52px;
+    height: 52px;
+  }
+}
