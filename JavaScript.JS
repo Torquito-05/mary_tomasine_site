@@ -36,3 +36,38 @@
 
     setTimeout(showAll, 2000);
 })();
+
+// ---------- Menu hambúrguer (mobile) ----------
+(function () {
+  var toggle = document.getElementById('menuToggle');
+  var navList = document.getElementById('navList');
+
+  if (!toggle || !navList) return;
+
+  toggle.addEventListener('click', function () {
+    var isOpen = navList.classList.toggle('open');
+    toggle.classList.toggle('open', isOpen);
+    toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  });
+
+  // Fecha o menu ao clicar em um link (exceto o item com dropdown)
+  navList.querySelectorAll('li:not(.has-dropdown) > a').forEach(function (link) {
+    link.addEventListener('click', function () {
+      navList.classList.remove('open');
+      toggle.classList.remove('open');
+      toggle.setAttribute('aria-expanded', 'false');
+    });
+  });
+
+  // No mobile, clicar em "Redes Sociais" abre/fecha o submenu (em vez de hover)
+  var dropdownParent = navList.querySelector('li.has-dropdown');
+  if (dropdownParent) {
+    var dropdownLink = dropdownParent.querySelector(':scope > a');
+    dropdownLink.addEventListener('click', function (e) {
+      if (window.innerWidth <= 768) {
+        e.preventDefault();
+        dropdownParent.classList.toggle('open');
+      }
+    });
+  }
+})();
