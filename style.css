@@ -33,6 +33,10 @@
 /* ---------- Reset básico ---------- */
 *, *::before, *::after { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
+html, body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
 body {
   margin: 0;
   background: var(--paper);
@@ -113,6 +117,42 @@ header::after {
      Agora o próprio .navbar fica acima de .home-content no empilhamento. */
   z-index: 30;
   padding: var(--space-sm) 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ---------- Menu hambúrguer (mobile) ---------- */
+.menu-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  position: absolute;
+  right: var(--space-md);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 40;
+}
+.menu-toggle span {
+  width: 26px;
+  height: 3px;
+  background: var(--white);
+  border-radius: 2px;
+  transition: transform var(--transition), opacity var(--transition);
+}
+.menu-toggle.open span:nth-child(1) {
+  transform: translateY(8px) rotate(45deg);
+}
+.menu-toggle.open span:nth-child(2) {
+  opacity: 0;
+}
+.menu-toggle.open span:nth-child(3) {
+  transform: translateY(-8px) rotate(-45deg);
 }
 .navbar ul {
   display: flex;
@@ -206,19 +246,45 @@ header::after {
 }
 .navbar .dropdown svg { flex-shrink: 0; }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
+  .menu-toggle {
+    display: flex;
+  }
+
+  .navbar ul {
+    display: none;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    padding: var(--space-sm) var(--space-md) var(--space-md);
+    gap: var(--space-xs);
+  }
+  .navbar ul.open {
+    display: flex;
+  }
+  .navbar li {
+    width: 100%;
+  }
+  .navbar > ul > li > a {
+    display: block;
+    width: 100%;
+    padding: 0.5rem 0;
+  }
+
   .navbar .dropdown {
     position: static;
     transform: none;
     min-width: 0;
     box-shadow: none;
     background: rgba(252, 251, 248, 0.08);
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
     display: none;
+    margin-top: 0.4rem;
   }
-  .navbar li.has-dropdown:hover .dropdown,
-  .navbar li.has-dropdown:focus-within .dropdown {
+  .navbar li.has-dropdown.open .dropdown {
     display: block;
-    transform: none;
   }
 }
 
@@ -353,6 +419,21 @@ header::after {
 .location-section .service-card {
   border-top-color: var(--gold);
   min-height: 160px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.location-section .service-card img {
+  height: 220px;
+  object-fit: cover;
+}
+
+@media (max-width: 480px) {
+  .location-section .service-card img {
+    flex: 1 1 100%;
+    min-width: 0 !important;
+    width: 100%;
+  }
 }
 
 /* ---------- Eventos ---------- */
@@ -426,8 +507,18 @@ footer {
 
 @media (max-width: 600px) {
   :root { font-size: 15px; }
-  .navbar ul { gap: var(--space-sm); }
   .home-content { padding: var(--space-lg) var(--space-sm); }
+}
+
+@media (max-width: 380px) {
+  /* Em telas muito estreitas, os grids inline (minmax(300px,1fr))
+     podem forçar rolagem horizontal. Força 1 coluna nesse caso. */
+  .services-section [style*="grid-template-columns"],
+  .apointment-forms [style*="grid-template-columns"],
+  .location-section [style*="grid-template-columns"],
+  .faq-section [style*="grid-template-columns"] {
+    grid-template-columns: 1fr !important;
+  }
 }
 
 /* ---------- Botão WhatsApp flutuante ---------- */
