@@ -464,7 +464,7 @@ footer {
   :root { font-size: 15px; }
   .navbar ul { gap: var(--space-sm); }
   .home-content { padding: var(--space-lg) var(--space-sm); }
-  .home-content h1 { font-size: 1.6rem; } 
+  .home-content h1 { font-size: 1.6rem; var(--paper--) } 
 
 @media (max-width: 480px) {
   .container { padding: 0 var(--space-xs); }
