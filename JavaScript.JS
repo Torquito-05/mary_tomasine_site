@@ -3,7 +3,8 @@
 /**
  * script.js — Mary Tomasine
  * Responsável por:
- *  1) Animações de entrada (scroll reveal) com fallback seguro
+ *  1) Animações de entrada (scroll reveal) com fallback seguro,
+ *     incluindo atraso em cascata via propriedade CSS --reveal-delay
  *  2) Menu "Redes Sociais" acessível por toque no mobile
  */
 (function () {
@@ -30,12 +31,44 @@
   /* ---------------------------------------------------
      1) Animações de entrada
   --------------------------------------------------- */
+
+  // Quanto (em ms) cada item de um mesmo grupo atrasa em relação
+  // ao anterior, criando o efeito de cascata. Ajuste esse número
+  // para acelerar/desacelerar a cascata.
+  var STAGGER_STEP_MS = 90;
+  var STAGGER_MAX_MS = 450; // trava o atraso máximo, pra grids grandes
+                             // não demorarem demais pra terminar
+
+  function assignStaggerDelays(elements) {
+    // Agrupa os elementos animados pelo pai direto (ex: todos os
+    // .service-card dentro do mesmo .card-grid formam um grupo) e
+    // define --reveal-delay crescente dentro de cada grupo.
+    var groups = new Map();
+
+    elements.forEach(function (el) {
+      var parent = el.parentElement;
+      if (!groups.has(parent)) groups.set(parent, []);
+      groups.get(parent).push(el);
+    });
+
+    groups.forEach(function (siblings) {
+      siblings.forEach(function (el, index) {
+        var delay = Math.min(index * STAGGER_STEP_MS, STAGGER_MAX_MS);
+        el.style.setProperty('--reveal-delay', delay + 'ms');
+      });
+    });
+  }
+
   function initScrollReveal() {
     var html = document.documentElement;
     html.classList.add('js-animate');
 
-    var elements = document.querySelectorAll('[data-animate]');
+    var elements = Array.prototype.slice.call(
+      document.querySelectorAll('[data-animate]')
+    );
     if (!elements.length) return;
+
+    assignStaggerDelays(elements);
 
     function showAll() {
       elements.forEach(function (el) {
