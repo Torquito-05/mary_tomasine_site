@@ -487,3 +487,9 @@ footer {
         width: 95%;
     }
 }   
+.navbar li.has-dropdown.is-open .dropdown {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+}
