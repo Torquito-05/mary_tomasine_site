@@ -471,7 +471,7 @@ footer {
 @media screen and (max-width: 480px) {
     .container {
         width: 100%;
-        margin: 0;
+        margin: 20;
         padding: 10px;
     }
     
