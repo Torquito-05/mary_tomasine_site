@@ -470,7 +470,7 @@ footer {
 /* Estilo para Celulares (max-width: 480px) */
 @media screen and (max-width: 480px) {
     .container {
-        width: 100%;
+        width: 95%;
         margin: 20%;
         padding: 20px;
     }
