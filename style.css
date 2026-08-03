@@ -397,6 +397,20 @@ header::after {
   background: var(--paper-alt);
 }
 
+/* ---------- Política de Privacidade ---------- */
+.policy-section {
+  padding: var(--space-xl) 0;
+}
+.policy-container {
+  max-width: 820px;
+}
+.policy-container h2 {
+  margin-top: var(--space-lg);
+}
+.policy-container h2:first-child {
+  margin-top: 0;
+}
+
 /* ---------- Rodapé ---------- */
 footer {
   background: var(--moss-dark);
