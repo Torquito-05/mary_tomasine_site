@@ -1,38 +1,144 @@
+'use strict';
+
+/**
+ * script.js — Mary Tomasine
+ * Responsável por:
+ *  1) Animações de entrada (scroll reveal) com fallback seguro
+ *  2) Menu "Redes Sociais" acessível por toque no mobile
+ */
 (function () {
-  var html = document.documentElement;
-  html.classList.add('js-animate'); 
 
-  var elements = document.querySelectorAll('[data-animate]');
+  /* ---------------------------------------------------
+     Utilitários
+  --------------------------------------------------- */
 
-  function showAll() {
-    elements.forEach(function (el) {
-      el.classList.add('visible');
+  // Debounce simples: evita rodar uma função a cada pixel de resize
+  function debounce(fn, wait) {
+    var timer = null;
+    return function () {
+      var args = arguments;
+      clearTimeout(timer);
+      timer = setTimeout(function () {
+        fn.apply(null, args);
+      }, wait);
+    };
+  }
+
+  var mqMobile = window.matchMedia('(max-width: 600px)');
+  var mqReduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  /* ---------------------------------------------------
+     1) Animações de entrada
+  --------------------------------------------------- */
+  function initScrollReveal() {
+    var html = document.documentElement;
+    html.classList.add('js-animate');
+
+    var elements = document.querySelectorAll('[data-animate]');
+    if (!elements.length) return;
+
+    function showAll() {
+      elements.forEach(function (el) {
+        el.classList.add('visible');
+      });
+    }
+
+    // Sem suporte, ou usuário pediu menos movimento: mostra tudo direto
+    if (!('IntersectionObserver' in window) || mqReduceMotion.matches) {
+      showAll();
+      return;
+    }
+
+    var observer = new IntersectionObserver(handleIntersect, {
+      threshold: mqMobile.matches ? 0.05 : 0.15,
+      rootMargin: mqMobile.matches ? '0px 0px -10px 0px' : '0px 0px -40px 0px'
     });
-  }
 
-  if (!('IntersectionObserver' in window)) {
-    showAll();
-    return;
-  }
-
-  var observer = new IntersectionObserver(
-    function (entries, obs) {
+    function handleIntersect(entries, obs) {
       entries.forEach(function (entry) {
         if (entry.isIntersecting) {
           entry.target.classList.add('visible');
-          obs.unobserve(entry.target); // anima uma única vez
+          obs.unobserve(entry.target);
         }
       });
-    },
-    {
-      threshold: 0.15,   // dispara quando 15% do elemento está visível
-      rootMargin: '0px 0px -40px 0px' // antecipa um pouco a entrada
     }
-  );
 
-  elements.forEach(function (el) {
-    observer.observe(el);
-  });
+    elements.forEach(function (el) {
+      observer.observe(el);
+    });
 
+    // Rede de segurança: se algo travar, ninguém fica com conteúdo invisível
     setTimeout(showAll, 2000);
+  }
+
+  /* ---------------------------------------------------
+     2) Dropdown "Redes Sociais" acessível no toque
+        (hover/:focus-within do CSS não cobre celular)
+  --------------------------------------------------- */
+  function initTouchDropdown() {
+    var items = document.querySelectorAll('.navbar li.has-dropdown');
+    if (!items.length) return;
+
+    items.forEach(function (item) {
+      var trigger = item.querySelector(':scope > a');
+      var dropdown = item.querySelector('.dropdown');
+      if (!trigger || !dropdown) return;
+
+      trigger.setAttribute('aria-expanded', 'false');
+
+      trigger.addEventListener('click', function (event) {
+        if (!mqMobile.matches) return; // desktop continua usando hover normal
+
+        event.preventDefault();
+        var isOpen = item.classList.toggle('is-open');
+        trigger.setAttribute('aria-expanded', String(isOpen));
+
+        // Fecha os outros dropdowns abertos, se houver mais de um
+        items.forEach(function (other) {
+          if (other !== item) {
+            other.classList.remove('is-open');
+            var otherTrigger = other.querySelector(':scope > a');
+            if (otherTrigger) otherTrigger.setAttribute('aria-expanded', 'false');
+          }
+        });
+      });
+    });
+
+    // Clique fora fecha o menu aberto
+    document.addEventListener('click', function (event) {
+      items.forEach(function (item) {
+        if (!item.contains(event.target)) {
+          item.classList.remove('is-open');
+          var trigger = item.querySelector(':scope > a');
+          if (trigger) trigger.setAttribute('aria-expanded', 'false');
+        }
+      });
+    });
+
+    // Esc fecha tudo (bom para quem usa teclado)
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape') {
+        items.forEach(function (item) {
+          item.classList.remove('is-open');
+          var trigger = item.querySelector(':scope > a');
+          if (trigger) trigger.setAttribute('aria-expanded', 'false');
+        });
+      }
+    });
+  }
+
+  /* ---------------------------------------------------
+     Inicialização
+  --------------------------------------------------- */
+  function init() {
+    initScrollReveal();
+    initTouchDropdown();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+
 })();
