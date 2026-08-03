@@ -471,8 +471,8 @@ footer {
 @media screen and (max-width: 480px) {
     .container {
         width: 100%;
-        margin: 20;
-        padding: 10px;
+        margin: 20%;
+        padding: 20px;
     }
     
     /* Exemplo: Esconder elementos apenas no mobile */
