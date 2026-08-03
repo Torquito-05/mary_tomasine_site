@@ -203,23 +203,6 @@ header::after {
 }
 .navbar .dropdown svg { flex-shrink: 0; }
 
-@media (max-width: 600px) {
-  .navbar .dropdown {
-    position: static;
-    transform: none;
-    min-width: 0;
-    box-shadow: none;
-    background: rgba(252, 251, 248, 0.08);
-    display: none;
-  }
-  .navbar li.has-dropdown:hover .dropdown,
-  .navbar li.has-dropdown:focus-within .dropdown,
-  .navbar li.has-dropdown.is-open .dropdown {
-    display: block;
-    transform: none;
-  }
-}
-
 .home-content {
   position: relative;
   z-index: 5;
@@ -453,7 +436,15 @@ footer {
   }
 }
 
-/* ---------- Responsivo ---------- */
+/* ==================================================================
+   RESPONSIVO
+   Ajustado para caber com boa estética em telas de smartphone,
+   com foco no iPhone 12 (largura de 390px / DPR 3).
+   Somente tamanhos, espaçamentos e proporções são alterados aqui —
+   nenhum texto foi modificado.
+   ================================================================== */
+
+/* ---------- Tablets / telas médias (≤900px) ---------- */
 @media (max-width: 900px) {
   .about-section .row-container,
   .about-section .row-container:nth-of-type(2) {
@@ -470,15 +461,112 @@ footer {
   .container { padding: 0 var(--space-sm); }
 }
 
+/* ---------- Celulares (≤600px) — inclui iPhone 12 (390px) ----------
+   Reduz a escala de espaçamento inteira (--space-*) para que os
+   respiros gigantes do desktop (7rem, 4rem) não dominem uma tela
+   pequena. Como quase todo o layout usa var(--space-*), essa única
+   mudança já reequilibra proporcionalmente o site inteiro. */
 @media (max-width: 600px) {
-  :root { font-size: 15px; }
-  .navbar ul { gap: var(--space-sm); }
-  .home-content { padding: var(--space-lg) var(--space-sm); }
-  .home-content h1 { font-size: 1.6rem; color: var(--paper-alt); }
+  :root {
+    font-size: 15px;
+    --space-xs: 0.4rem;
+    --space-sm: 0.85rem;
+    --space-md: 1.4rem;
+    --space-lg: 2.4rem;
+    --space-xl: 3.2rem;
+    --radius-lg: 20px;
+  }
+
+  .container { padding: 0 var(--space-sm); }
+
+  /* Navegação: mais compacta e com menos espaço entre itens,
+     para caber em poucas linhas centralizadas. */
+  .navbar { padding: var(--space-xs) 0; }
+  .navbar ul {
+    gap: var(--space-sm) var(--space-md);
+    padding: var(--space-xs) var(--space-sm);
+  }
+  .navbar a,
+  .navbar h3 { font-size: 0.78rem; }
+
+  .navbar .dropdown {
+    position: static;
+    transform: none;
+    min-width: 0;
+    box-shadow: none;
+    background: rgba(252, 251, 248, 0.08);
+    display: none;
+  }
+  .navbar li.has-dropdown:hover .dropdown,
+  .navbar li.has-dropdown:focus-within .dropdown,
+  .navbar li.has-dropdown.is-open .dropdown {
+    display: block;
+    transform: none;
+  }
+
+  /* Hero: título e textos com hierarquia mais compacta */
+  .home-content {
+    padding: var(--space-lg) var(--space-sm) calc(var(--space-lg) + 24px);
+  }
+  .exclusive.badge {
+    font-size: 0.7rem;
+    padding: 0.3rem 0.8rem;
+    margin-bottom: var(--space-sm);
+  }
+  .home-content h1 {
+    font-size: 1.55rem;
+    color: var(--paper-alt);
+    margin-bottom: var(--space-sm);
+  }
+  .home-content .lead-line { font-size: 1.05rem; }
+  .home-content p { font-size: 0.95rem; line-height: 1.65; }
+  .btn-cta {
+    padding: 0.8rem 1.6rem;
+    font-size: 0.95rem;
+    margin-top: var(--space-md) !important;
+  }
+
+  /* Sobre: imagens menores e proporção mais confortável em coluna */
+  .about-section { padding: var(--space-lg) 0 var(--space-md); }
+  .about-section .row-container { gap: var(--space-sm); margin-bottom: var(--space-md); }
+  .img-container { aspect-ratio: 4 / 3; border-radius: var(--radius-lg) var(--radius-lg) var(--radius-lg) 4px; }
+  .text-container h2.about { font-size: 1.5rem; }
+  .text-container h3 { font-size: 1rem; }
+
+  /* Seções de cards: uma coluna, cards mais enxutos */
+  .services-section,
+  .apointment-forms,
+  .location-section,
+  .events-section,
+  .testimony-section,
+  .faq-section {
+    padding: var(--space-lg) 0;
+  }
+  .card-grid { gap: var(--space-sm); margin-top: var(--space-sm); }
+  .card-img { height: 150px; }
+  .service-card { padding: var(--space-sm); border-radius: 18px; }
+  .service-card .Content h4 { font-size: 1.05rem; }
+  .service-card .Content p { font-size: 0.88rem; }
+  .services-description { font-size: 0.9rem; }
+
+  .location-gallery { gap: var(--space-xs); }
+
+  footer { font-size: 0.75rem; padding: var(--space-sm) 0; }
 }
 
+/* ---------- Telas bem estreitas (≤480px) — ajuste fino extra ---------- */
 @media (max-width: 480px) {
   .container { padding: 0 var(--space-xs); }
+
+  .home-content h1 { font-size: 1.4rem; }
+  .exclusive.badge { font-size: 0.65rem; }
+
+  .card-grid {
+    grid-template-columns: 1fr;
+  }
+  .location-gallery {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 /* ---------- Botão WhatsApp flutuante ---------- */
@@ -505,9 +593,10 @@ footer {
 
 @media (max-width: 600px) {
   .whatsapp-float {
-    bottom: 16px;
-    right: 16px;
-    width: 52px;
-    height: 52px;
+    bottom: 14px;
+    right: 14px;
+    width: 48px;
+    height: 48px;
   }
+  .whatsapp-float svg { width: 24px; height: 24px; }
 }
