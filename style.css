@@ -477,7 +477,7 @@ footer {
     --radius-lg: 20px;
   }
 
-  .container { padding: 0 var(--space-sm); }
+  .container { padding: 0 var(--space-md); }
 
   /* Navegação: mais compacta e com menos espaço entre itens,
      para caber em poucas linhas centralizadas. */
@@ -526,12 +526,39 @@ footer {
     margin-top: var(--space-md) !important;
   }
 
-  /* Sobre: imagens menores e proporção mais confortável em coluna */
-  .about-section { padding: var(--space-lg) 0 var(--space-md); }
-  .about-section .row-container { gap: var(--space-sm); margin-bottom: var(--space-md); }
-  .img-container { aspect-ratio: 4 / 3; border-radius: var(--radius-lg) var(--radius-lg) var(--radius-lg) 4px; }
-  .text-container h2.about { font-size: 1.5rem; }
-  .text-container h3 { font-size: 1rem; }
+  /* Sobre: bloco centralizado, com foto em formato retrato "inserida"
+     (não ocupa a largura toda) e texto centralizado abaixo, com
+     respiro generoso entre imagem, texto e o próximo bloco */
+  .about-section { padding: var(--space-lg) 0; }
+  .about-section .row-container {
+    align-items: center;
+    text-align: center;
+    gap: var(--space-md);
+    margin-bottom: var(--space-xl);
+  }
+  .about-section .row-container:last-child { margin-bottom: 0; }
+  .about-section .img-container {
+    width: 78%;
+    aspect-ratio: 3 / 4;
+    border-radius: var(--radius-lg);
+    margin: 0 auto;
+  }
+  .about-section .text-container h2.about {
+    font-size: 1.3rem;
+    margin-bottom: var(--space-xs);
+  }
+  .about-section .text-container h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: var(--space-sm);
+  }
+  .about-section .text-container p {
+    line-height: 1.75;
+    max-width: 320px;
+    margin-left: auto;
+    margin-right: auto;
+  }
 
   /* Seções de cards: uma coluna, cards mais enxutos */
   .services-section,
