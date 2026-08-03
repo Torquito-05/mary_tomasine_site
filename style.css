@@ -461,3 +461,29 @@ footer {
     height: 52px;
   }
 }
+/* Estilo padrão (Desktop) */
+.container {
+    width: 80%;
+    margin: 0 auto;
+}
+
+/* Estilo para Celulares (max-width: 480px) */
+@media screen and (max-width: 480px) {
+    .container {
+        width: 100%;
+        margin: 0;
+        padding: 10px;
+    }
+    
+    /* Exemplo: Esconder elementos apenas no mobile */
+    .desktop-only {
+        display: none;
+    }
+}
+
+/* Estilo para Tablets (max-width: 768px) */
+@media screen and (max-width: 768px) {
+    .container {
+        width: 95%;
+    }
+}   
